@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>Автонумировка эелементов</Name>
+		<Assembly>C:\Users\Sidorin_O\source\repos\INum\INum\bin\Debug\INum.dll</Assembly>
+		<AddInId>926DF2E0-B059-47E6-8A8D-42F7456FB3E4</AddInId>
+		<FullClassName>INum.Main</FullClassName>
+		<VendorId>КПСП</VendorId>
+		<VendorDescription>Такая фирма, что еще сказать..</VendorDescription>
+	</AddIn>
+</RevitAddIns>
