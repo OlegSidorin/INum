@@ -15,7 +15,11 @@ namespace INum
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
-            System.Windows.Forms.MessageBox.Show("Привет! " + doc.ActiveView.ToString());
+            //System.Windows.Forms.MessageBox.Show("Привет! " + doc.ActiveView.ToString());
+
+            SuperForm form = new SuperForm();
+            form.Show();
+
             return Result.Succeeded;
         }
     }

@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,15 +53,24 @@
     <Compile Include="Main.cs" />
     <Compile Include="NumCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuperForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SuperForm.Designer.cs">
+      <DependentUpon>SuperForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="res\num-32.png">
+    <EmbeddedResource Include="res\num-32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="res\num.png">
+    </EmbeddedResource>
+    <EmbeddedResource Include="res\num.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SuperForm.resx">
+      <DependentUpon>SuperForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="inum.addin" />

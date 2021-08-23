@@ -25,11 +25,12 @@ namespace INum
 
             var MBtnData = new PushButtonData("MBtnData", "Авто\nномер", path, "INum.NumCommand")
             {
-                ToolTipImage = new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num.png", UriKind.Absolute)),
+                ToolTipImage = PngImageSource("INum.res.num.png"), //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num.png", UriKind.Absolute)),
                 ToolTip = "Маркирует экземпляры семейств"
             };
             var TechBtn = techPanel.AddItem(MBtnData) as PushButton;
-            TechBtn.LargeImage = new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num-32.png", UriKind.Absolute));
+            TechBtn.LargeImage = PngImageSource("INum.res.num-32.png"); //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num-32.png", UriKind.Absolute));
+
 
             return Result.Succeeded;
         }
@@ -37,6 +38,14 @@ namespace INum
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Succeeded;
+        }
+
+        private System.Windows.Media.ImageSource PngImageSource(string embeddedPath)
+        {
+            Stream stream = this.GetType().Assembly.GetManifestResourceStream(embeddedPath);
+            var decoder = new System.Windows.Media.Imaging.PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+
+            return decoder.Frames[0];
         }
 
     }
