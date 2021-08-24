@@ -23,7 +23,7 @@ namespace INum
         public static string prefix = "";
         public static string eqp = "";
         public static string suffix = "";
-        public static string startnum = "";
+        public static decimal startnum = 1;
 
         public static string TabName { get; set; } = "Надстройки";
         public static string PanelTechName { get; set; } = "NUMINC";
@@ -125,7 +125,9 @@ namespace INum
     {
         public void Execute(UIApplication app)
         {
-            TaskDialog.Show("1", "Ooooops");
+            string str = "";
+            
+            TaskDialog.Show("1", "Ooooops" + str);
             return;
         }
 
@@ -140,7 +142,7 @@ namespace INum
         public string Prefix { get; set; } 
         public string Eqp { get; set; } 
         public string Suffix { get; set; } 
-        public string StartNum { get; set; } 
+        public decimal StartNum { get; set; } 
 
     }
 }

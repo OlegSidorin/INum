@@ -20,6 +20,7 @@ namespace INum
     {
         public ButtonExternalEvent buttonExternalEvent;
         public ExternalEvent externalEvent;
+
         public SuperForm()
         {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace INum
             tb_prefix.Text = myData.Prefix;
             tb_suffix.Text = myData.Suffix;
             tb_eqp.Text = myData.Eqp;
-            tb_startnum.Text = myData.StartNum;
+            nm.Value = myData.StartNum;
             buttonExternalEvent = new ButtonExternalEvent();
             externalEvent = ExternalEvent.Create(buttonExternalEvent);
         }
@@ -40,15 +41,16 @@ namespace INum
             Main.prefix = tb_prefix.Text;
             Main.eqp = tb_eqp.Text;
             Main.suffix = tb_suffix.Text;
-            Main.startnum = tb_startnum.Text;
+            Main.startnum = nm.Value;
 
             MyData myData = new MyData();
             myData.Prefix = tb_prefix.Text;
             myData.Eqp = tb_eqp.Text;
             myData.Suffix = tb_suffix.Text;
-            myData.StartNum = tb_startnum.Text;
+            myData.StartNum = nm.Value;
             string output = JsonConvert.SerializeObject(myData);
             Main.WriteToFile(Main.filename, output);
+
             //Close();
         }
 
@@ -73,11 +75,8 @@ namespace INum
                 {
                     if (p.Definition.Name.ToLower() == "мск_маркировка")
                     {
-                        int.TryParse(Main.startnum, out int start);
-                        p.Set(Main.prefix + Main.eqp + Main.suffix + start.ToString());
-                        start += 1;
-                        Main.startnum = start.ToString();
-                        
+                        //int.TryParse(Main.startnum, out int start);
+                        p.Set(Main.prefix + Main.eqp + Main.suffix + Main.startnum.ToString("0"));
                     }
                 }
                 tr.Commit();
