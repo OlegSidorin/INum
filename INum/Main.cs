@@ -24,6 +24,7 @@ namespace INum
         public static string eqp = "";
         public static string suffix = "";
         public static decimal startnum = 1;
+        public static ElementId adElementId = null;
 
         public static string TabName { get; set; } = "Надстройки";
         public static string PanelTechName { get; set; } = "NUMINC";
@@ -33,25 +34,16 @@ namespace INum
             var techPanel = application.CreateRibbonPanel(PanelTechName);
             string path = Assembly.GetExecutingAssembly().Location;
             filename = Path.GetDirectoryName(path) + "\\inumdata.txt";
-            var MBtnData = new PushButtonData("MBtnData", "Авто\nномер", path, "INum.NumCommand")
+            var MBtnData = new PushButtonData("MBtnData", "МСК_\nмаркировка", path, "INum.NumCommand")
             {
                 ToolTipImage = PngImageSource("INum.res.num.png"), //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num.png", UriKind.Absolute)),
-                ToolTip = "Маркирует экземпляры семейств"
+                ToolTip = "Маркирует экземпляры семейств, записывает в параметр МСК_Маркировка"
             };
             var TechBtn = techPanel.AddItem(MBtnData) as PushButton;
             TechBtn.LargeImage = PngImageSource("INum.res.num-32.png"); //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num-32.png", UriKind.Absolute));
 
-            application.ControlledApplication.DocumentChanged += ControlledApplication_DocumentChanged;
+            //application.ControlledApplication.DocumentChanged += ControlledApplication_DocumentChanged;
 
-            /*
-            MyData myData = new MyData();
-            myData.Prefix = "pre-";
-            myData.Eqp = "Equip";
-            myData.Suffix = "-suf";
-            myData.StartNum = "1";
-            string output = JsonConvert.SerializeObject(myData);
-            WriteToFile("C:\\Users\\Sidorin_O\\Documents\\TEST\\inumdata.txt", output);
-            */
 
             return Result.Succeeded;
         }
