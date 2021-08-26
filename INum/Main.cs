@@ -27,14 +27,14 @@ namespace INum
         public static ElementId adElementId = null;
 
         public static string TabName { get; set; } = "Надстройки";
-        public static string PanelTechName { get; set; } = "NUMINC";
+        public static string PanelTechName { get; set; } = "На плане";
 
         public Result OnStartup(UIControlledApplication application)
         {
             var techPanel = application.CreateRibbonPanel(PanelTechName);
             string path = Assembly.GetExecutingAssembly().Location;
             filename = Path.GetDirectoryName(path) + "\\inumdata.txt";
-            var MBtnData = new PushButtonData("MBtnData", "МСК_\nмаркировка", path, "INum.NumCommand")
+            var MBtnData = new PushButtonData("MBtnData", "МСК_\nмаркировка", path, "INum.MarkingCommand")
             {
                 ToolTipImage = PngImageSource("INum.res.num.png"), //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num.png", UriKind.Absolute)),
                 ToolTip = "Маркирует экземпляры семейств, записывает в параметр МСК_Маркировка"
@@ -50,9 +50,9 @@ namespace INum
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            myExternalEventHandler = new MyExternalEventHandler();
-            myExternalEvent = ExternalEvent.Create(myExternalEventHandler);
-            myExternalEvent.Raise();
+            //myExternalEventHandler = new MyExternalEventHandler();
+            //myExternalEvent = ExternalEvent.Create(myExternalEventHandler);
+            //myExternalEvent.Raise();
             return Result.Succeeded;
         }
 
@@ -64,6 +64,9 @@ namespace INum
             if (txname == "MyTransaction")
             {
                 Document doc = e.GetDocument();
+
+                AppForm appForm = AppForm.ActiveForm as AppForm;
+                appForm.nm.Value += 1;
 
                 TaskDialog.Show("1", "Опа..." + doc.Title);
             }
@@ -110,31 +113,6 @@ namespace INum
             }
             return output;
         }
-
-    }
-
-    public class MyExternalEventHandler : IExternalEventHandler
-    {
-        public void Execute(UIApplication app)
-        {
-            string str = "";
-            
-            TaskDialog.Show("1", "Ooooops" + str);
-            return;
-        }
-
-        public string GetName()
-        {
-            return "Handler";
-        }
-    }
-
-    public class MyData
-    {
-        public string Prefix { get; set; } 
-        public string Eqp { get; set; } 
-        public string Suffix { get; set; } 
-        public decimal StartNum { get; set; } 
 
     }
 }

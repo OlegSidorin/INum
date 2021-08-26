@@ -1,13 +1,13 @@
 ﻿
 namespace INum
 {
-    partial class SuperForm
+    partial class AppForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
+         
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -30,7 +30,7 @@ namespace INum
         private void InitializeComponent()
         {
             this.tb_prefix = new System.Windows.Forms.TextBox();
-            this.tb_eqp = new System.Windows.Forms.TextBox();
+            this.tb_middle_part = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tb_suffix = new System.Windows.Forms.TextBox();
@@ -52,12 +52,12 @@ namespace INum
             // 
             // tb_eqp
             // 
-            this.tb_eqp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tb_eqp.Location = new System.Drawing.Point(104, 41);
-            this.tb_eqp.Margin = new System.Windows.Forms.Padding(2);
-            this.tb_eqp.Name = "tb_eqp";
-            this.tb_eqp.Size = new System.Drawing.Size(106, 26);
-            this.tb_eqp.TabIndex = 2;
+            this.tb_middle_part.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_middle_part.Location = new System.Drawing.Point(104, 41);
+            this.tb_middle_part.Margin = new System.Windows.Forms.Padding(2);
+            this.tb_middle_part.Name = "tb_eqp";
+            this.tb_middle_part.Size = new System.Drawing.Size(106, 26);
+            this.tb_middle_part.TabIndex = 2;
             // 
             // label1
             // 
@@ -159,7 +159,7 @@ namespace INum
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tb_suffix);
-            this.Controls.Add(this.tb_eqp);
+            this.Controls.Add(this.tb_middle_part);
             this.Controls.Add(this.tb_prefix);
             this.Controls.Add(this.buttonС);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -183,9 +183,10 @@ namespace INum
         private System.Windows.Forms.Label label4;
 
         public System.Windows.Forms.TextBox tb_prefix;
-        public System.Windows.Forms.TextBox tb_eqp;
+        public System.Windows.Forms.TextBox tb_middle_part;
         public System.Windows.Forms.TextBox tb_suffix;
         public System.Windows.Forms.NumericUpDown nm;
+
         private System.Windows.Forms.Button buttonС;
     }
 }

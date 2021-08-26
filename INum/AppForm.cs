@@ -18,25 +18,27 @@ using Keys = System.Windows.Forms.Keys;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
-using Autodesk.Revit.UI.Selection;
 
 namespace INum
 {
-    public partial class SuperForm : Form
+    public partial class AppForm : Form
     {
         public ButtonCExternalEvent buttonCExternalEvent;
         public ExternalEvent externalCEvent;
+        public static decimal StartNumber = 1;
 
-        public SuperForm()
+
+        public AppForm()
         {
             InitializeComponent();
-            MyData myData = new MyData();
+            FormData formData = new FormData();
             string input = Main.ReadFromFile(Main.filename);
-            myData = JsonConvert.DeserializeObject<MyData>(input);
-            tb_prefix.Text = myData.Prefix;
-            tb_suffix.Text = myData.Suffix;
-            tb_eqp.Text = myData.Eqp;
-            nm.Value = myData.StartNum;
+            formData = JsonConvert.DeserializeObject<FormData>(input);
+            tb_prefix.Text = formData.Prefix;
+            tb_suffix.Text = formData.Suffix;
+            tb_middle_part.Text = formData.MiddlePart;
+            StartNumber = formData.StartNum;
+            nm.Value = StartNumber;
             buttonCExternalEvent = new ButtonCExternalEvent();
             externalCEvent = ExternalEvent.Create(buttonCExternalEvent);
         }
@@ -44,14 +46,17 @@ namespace INum
 
         private void buttonС_Click(object sender, EventArgs e)
         {
+            AppForm appForm = AppForm.ActiveForm as AppForm;
+            ButtonCExternalEvent.ActiveForm = appForm;
+
             Main.prefix = tb_prefix.Text;
-            Main.eqp = tb_eqp.Text;
+            Main.eqp = tb_middle_part.Text;
             Main.suffix = tb_suffix.Text;
             Main.startnum = nm.Value;
 
-            MyData myData = new MyData();
+            FormData myData = new FormData();
             myData.Prefix = tb_prefix.Text;
-            myData.Eqp = tb_eqp.Text;
+            myData.MiddlePart = tb_middle_part.Text;
             myData.Suffix = tb_suffix.Text;
             myData.StartNum = nm.Value;
             string output = JsonConvert.SerializeObject(myData);
@@ -101,6 +106,7 @@ namespace INum
         static bool _place_one_single_instance_then_abort = true;
         List<ElementId> _added_element_ids = new List<ElementId>();
         IWin32Window _revit_window;
+        public static AppForm ActiveForm = null;
 
         public void Execute(UIApplication app)
         {
@@ -140,7 +146,8 @@ namespace INum
 
             _added_element_ids.Clear();
 
-            app.Application.DocumentChanged += new EventHandler<DocumentChangedEventArgs>(OnDocumentChanged);
+            var eventHandler = new EventHandler<DocumentChangedEventArgs>(OnDocumentChanged);
+            app.Application.DocumentChanged += eventHandler;
             try
             {
                 uidoc.PromptForFamilyInstancePlacement(symbol);
@@ -150,7 +157,7 @@ namespace INum
                 Debug.Print(ex.Message);
             }
 
-            app.Application.DocumentChanged -= new EventHandler<DocumentChangedEventArgs>(OnDocumentChanged);
+            app.Application.DocumentChanged -= eventHandler;
 
             int n = _added_element_ids.Count;
             
@@ -166,7 +173,8 @@ namespace INum
                 }
 
             }
-
+            //var eventHandler2 = new EventHandler<DocumentChangedEventArgs>(OnMyTransaction);
+            //app.Application.DocumentChanged += eventHandler2;
             using (Transaction tr = new Transaction(doc, "MyTransaction"))
             {
                 tr.Start();
@@ -181,7 +189,8 @@ namespace INum
                 }
                 tr.Commit();
             }
-
+            ActiveForm.nm.Value += 1;
+            //app.Application.DocumentChanged -= eventHandler2;
             return;
         }
         void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
@@ -189,6 +198,8 @@ namespace INum
             ICollection<ElementId> idsAdded = e.GetAddedElementIds();
             
             Main.adElementId = idsAdded.FirstOrDefault();
+
+
 
             int n = idsAdded.Count;
 
@@ -222,40 +233,42 @@ namespace INum
                   (uint)Press.KEYBOARD_MSG.WM_KEYDOWN,
                   (uint)Keys.Escape, 0);
             }
+
+            string txname = e.GetTransactionNames().FirstOrDefault();
+
+            if (txname == "MyTransaction")
+            {
+                Document doc = e.GetDocument();
+
+                AppForm appForm = AppForm.ActiveForm as AppForm;
+                appForm.nm.Value += 1;
+
+                TaskDialog.Show("1", "Опа..." + doc.Title);
+            }
+
+        }
+        void OnMyTransaction(object sender, DocumentChangedEventArgs e)
+        {
+            AppForm appForm = AppForm.ActiveForm as AppForm;
+            string isActive = appForm == null ? " no access " : "access " + appForm.ClientSize.ToString();
+            TaskDialog.Show("1", "Опа..." + e.GetDocument().Title + " Tranaction: " +e.GetTransactionNames().FirstOrDefault() + isActive);
+            
+            //string txname = e.GetTransactionNames().FirstOrDefault();
+
+            //if (txname == "MyTransaction")
+            //{
+            //    Document doc = e.GetDocument();
+
+                //AppForm appForm = AppForm.ActiveForm as AppForm;
+                //appForm.nm.Value += 1;
+
+            //}
+
         }
 
         public string GetName()
         {
             return "External Event";
-        }
-    }
-    public class AnnotationFilter : ISelectionFilter
-    {
-        public bool AllowElement(Element elem)
-        {
-            if (elem.Category.Id.IntegerValue == (int) BuiltInCategory.OST_CommunicationDevices)
-            {
-                return true;
-            }
-            if (elem.Category.Id.IntegerValue == (int)BuiltInCategory.OST_FireAlarmDevices)
-            {
-                return true;
-            }
-            if (elem.Category.Id.IntegerValue == (int)BuiltInCategory.OST_MechanicalEquipment)
-            {
-                return true;
-            }
-            if (elem.Category.Id.IntegerValue == (int)BuiltInCategory.OST_ElectricalEquipment)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool AllowReference(Reference reference, XYZ position)
-        {
-            throw new NotImplementedException();
         }
     }
 

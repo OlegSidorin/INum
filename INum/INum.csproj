@@ -57,15 +57,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationFilter.cs" />
+    <Compile Include="JtWindowHandle.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="NumCommand.cs" />
+    <Compile Include="FormData.cs" />
+    <Compile Include="MyExternalEventHandler.cs" />
+    <Compile Include="MarkingCommand.cs" />
+    <Compile Include="Press.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SuperForm.cs">
+    <Compile Include="AppForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SuperForm.Designer.cs">
-      <DependentUpon>SuperForm.cs</DependentUpon>
+    <Compile Include="AppForm.Designer.cs">
+      <DependentUpon>AppForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="inumdata.txt">
@@ -85,8 +91,8 @@
     <EmbeddedResource Include="res\num.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="SuperForm.resx">
-      <DependentUpon>SuperForm.cs</DependentUpon>
+    <EmbeddedResource Include="AppForm.resx">
+      <DependentUpon>AppForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
