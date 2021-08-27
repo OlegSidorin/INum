@@ -57,11 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataFile.cs" />
+    <Compile Include="DataForForm.cs" />
     <Compile Include="ElementsFilter.cs" />
     <Compile Include="JtWindowHandle.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="FormData.cs" />
     <Compile Include="MyExternalEventHandler.cs" />
     <Compile Include="MarkingCommand.cs" />
     <Compile Include="Press.cs" />

@@ -17,7 +17,6 @@ using ComponentManager = Autodesk.Windows.ComponentManager;
 using Keys = System.Windows.Forms.Keys;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
 
 namespace INum
 {
@@ -30,13 +29,14 @@ namespace INum
         public AppForm()
         {
             InitializeComponent();
-            string textFromFile = DataFile.ReadFromFile(DataFile.FileName);
-            FormData formData = new FormData();
-            formData = JsonConvert.DeserializeObject<FormData>(textFromFile);
-            tb_prefix.Text = formData.Prefix;
-            tb_suffix.Text = formData.Suffix;
-            tb_middle_part.Text = formData.MiddlePart;
-            nm.Value = formData.StartNum;
+
+            var dataForForm = new DataForForm();
+            dataForForm.GetData();
+            tb_prefix.Text = dataForForm.Prefix;
+            tb_suffix.Text = dataForForm.Suffix;
+            tb_middle_part.Text = dataForForm.MiddlePart;
+            nm.Value = dataForForm.StartNum;
+
             buttonCExternalEvent = new ButtonCExternalEvent();
             externalCEvent = ExternalEvent.Create(buttonCExternalEvent);
         }
@@ -45,20 +45,16 @@ namespace INum
         private void buttonС_Click(object sender, EventArgs e)
         {
             AppForm appForm = AppForm.ActiveForm as AppForm;
-            ButtonCExternalEvent.ActiveForm = appForm;
+            ButtonCExternalEvent._active_form = appForm;
 
-            FormData.StaticPrefix = tb_prefix.Text;
-            FormData.StaticMiddlePart = tb_middle_part.Text;
-            FormData.StaticSuffix = tb_suffix.Text;
-            FormData.StaticStartNum = nm.Value;
+            var dataForForm = new DataForForm();
+            dataForForm.Prefix = tb_prefix.Text;
+            dataForForm.MiddlePart = tb_middle_part.Text;
+            dataForForm.Suffix = tb_suffix.Text;
+            dataForForm.StartNum = nm.Value;
+            dataForForm.WriteData();
 
-            FormData myData = new FormData();
-            myData.Prefix = tb_prefix.Text;
-            myData.MiddlePart = tb_middle_part.Text;
-            myData.Suffix = tb_suffix.Text;
-            myData.StartNum = nm.Value;
-            string output = JsonConvert.SerializeObject(myData);
-            DataFile.WriteToFile(DataFile.FileName, output);
+            ButtonCExternalEvent._data_for_form = dataForForm;
 
             externalCEvent.Raise();
         }
@@ -66,7 +62,7 @@ namespace INum
 
     public class ButtonExternalEvent : IExternalEventHandler
     {
-
+        public static DataForForm _data_for_form;
         public void Execute(UIApplication app)
         {
             UIDocument uidoc = app.ActiveUIDocument;
@@ -84,7 +80,7 @@ namespace INum
                     if (p.Definition.Name.ToLower() == "мск_маркировка")
                     {
                         //int.TryParse(Main.startnum, out int start);
-                        p.Set(FormData.StaticPrefix + FormData.StaticMiddlePart + FormData.StaticSuffix + FormData.StaticStartNum.ToString("0"));
+                        p.Set(_data_for_form.Prefix + _data_for_form.MiddlePart + _data_for_form.Suffix + _data_for_form.StartNum.ToString("0"));
                     }
                 }
                 tr.Commit();
@@ -104,7 +100,8 @@ namespace INum
         static bool _place_one_single_instance_then_abort = true;
         List<ElementId> _added_element_ids = new List<ElementId>();
         IWin32Window _revit_window;
-        public static AppForm ActiveForm = null;
+        public static AppForm _active_form;
+        public static DataForForm _data_for_form;
 
         public void Execute(UIApplication app)
         {
@@ -182,12 +179,12 @@ namespace INum
                 {
                     if (p.Definition.Name.ToLower() == "мск_маркировка")
                     {
-                        p.Set(FormData.StaticPrefix + FormData.StaticMiddlePart + FormData.StaticSuffix + FormData.StaticStartNum.ToString("0"));
+                        p.Set(_data_for_form.Prefix + _data_for_form.MiddlePart + _data_for_form.Suffix + _data_for_form.StartNum.ToString("0"));
                     }
                 }
                 tr.Commit();
             }
-            ActiveForm.nm.Value += 1;
+            _active_form.nm.Value += 1;
             //app.Application.DocumentChanged -= eventHandler2;
             return;
         }
@@ -263,7 +260,6 @@ namespace INum
             //}
 
         }
-
         public string GetName()
         {
             return "External Event";

@@ -7,9 +7,8 @@ using Autodesk.Revit.Attributes;
 
 namespace INum
 {
-    [Transaction(TransactionMode.Manual)]
-    [Regeneration(RegenerationOption.Manual)]
-    public class Main : DataFile, IExternalApplication
+    [Transaction(TransactionMode.Manual), Regeneration(RegenerationOption.Manual)]
+    public class Main : IExternalApplication
     {
         public MyExternalEventHandler myExternalEventHandler;
         public ExternalEvent myExternalEvent;
@@ -23,7 +22,7 @@ namespace INum
         {
             var techPanel = application.CreateRibbonPanel(PanelTechName);
             string path = Assembly.GetExecutingAssembly().Location;
-            DataFile.FileName = Path.GetDirectoryName(path) + "\\inumdata.txt";
+            DataForForm.FileName = Path.GetDirectoryName(path) + "\\inumdata.txt";
             var MBtnData = new PushButtonData("MBtnData", "МСК_\nмаркировка", path, "INum.MarkingCommand")
             {
                 ToolTipImage = PngImageSource("INum.res.num.png"), 
