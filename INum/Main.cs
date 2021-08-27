@@ -1,29 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using Autodesk.Revit.DB.Events;
-using Newtonsoft.Json;
+using Autodesk.Revit.Attributes;
 
 namespace INum
 {
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
-    public class Main : IExternalApplication
+    [Transaction(TransactionMode.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
+    public class Main : DataFile, IExternalApplication
     {
-        public static string filename = "";
         public MyExternalEventHandler myExternalEventHandler;
         public ExternalEvent myExternalEvent;
-        public static string prefix = "";
-        public static string eqp = "";
-        public static string suffix = "";
-        public static decimal startnum = 1;
+
         public static ElementId adElementId = null;
 
         public static string TabName { get; set; } = "Надстройки";
@@ -33,43 +23,21 @@ namespace INum
         {
             var techPanel = application.CreateRibbonPanel(PanelTechName);
             string path = Assembly.GetExecutingAssembly().Location;
-            filename = Path.GetDirectoryName(path) + "\\inumdata.txt";
+            DataFile.FileName = Path.GetDirectoryName(path) + "\\inumdata.txt";
             var MBtnData = new PushButtonData("MBtnData", "МСК_\nмаркировка", path, "INum.MarkingCommand")
             {
-                ToolTipImage = PngImageSource("INum.res.num.png"), //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num.png", UriKind.Absolute)),
+                ToolTipImage = PngImageSource("INum.res.num.png"), 
                 ToolTip = "Маркирует экземпляры семейств, записывает в параметр МСК_Маркировка"
             };
             var TechBtn = techPanel.AddItem(MBtnData) as PushButton;
-            TechBtn.LargeImage = PngImageSource("INum.res.num-32.png"); //new BitmapImage(new Uri(Path.GetDirectoryName(path) + "\\res\\num-32.png", UriKind.Absolute));
-
-            //application.ControlledApplication.DocumentChanged += ControlledApplication_DocumentChanged;
-
+            TechBtn.LargeImage = PngImageSource("INum.res.num-32.png"); 
 
             return Result.Succeeded;
         }
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            //myExternalEventHandler = new MyExternalEventHandler();
-            //myExternalEvent = ExternalEvent.Create(myExternalEventHandler);
-            //myExternalEvent.Raise();
             return Result.Succeeded;
-        }
-
-
-        private void ControlledApplication_DocumentChanged(object sender, DocumentChangedEventArgs e)
-        {
-            string txname = e.GetTransactionNames().FirstOrDefault();
-
-            if (txname == "MyTransaction")
-            {
-                Document doc = e.GetDocument();
-
-                AppForm appForm = AppForm.ActiveForm as AppForm;
-                appForm.nm.Value += 1;
-
-                TaskDialog.Show("1", "Опа..." + doc.Title);
-            }
         }
 
         private System.Windows.Media.ImageSource PngImageSource(string embeddedPath)
@@ -79,40 +47,5 @@ namespace INum
 
             return decoder.Frames[0];
         }
-        public static void WriteToFile(string fileName, string txt)
-        {
-
-            if (!File.Exists(fileName))
-            {
-                try
-                {
-                    using (FileStream fs = File.Create(fileName))
-                    {
-                        byte[] info = new UTF8Encoding(true).GetBytes("");
-                        fs.Write(info, 0, info.Length);
-                    }
-                }
-                catch (Exception e)
-                {
-                    //System.Windows.MessageBox.Show(e.ToString());
-                }
-            }
-            using (StreamWriter writer = new StreamWriter(fileName, false))
-            {
-                writer.WriteLine(txt);
-            }
-
-        }
-
-        public static string ReadFromFile(string fileName)
-        {
-            string output = "";
-            using (StreamReader reader = new StreamReader(fileName, true))
-            {
-                output = reader.ReadLine();
-            }
-            return output;
-        }
-
     }
 }

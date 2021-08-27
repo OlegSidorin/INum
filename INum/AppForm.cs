@@ -25,20 +25,18 @@ namespace INum
     {
         public ButtonCExternalEvent buttonCExternalEvent;
         public ExternalEvent externalCEvent;
-        public static decimal StartNumber = 1;
 
 
         public AppForm()
         {
             InitializeComponent();
+            string textFromFile = DataFile.ReadFromFile(DataFile.FileName);
             FormData formData = new FormData();
-            string input = Main.ReadFromFile(Main.filename);
-            formData = JsonConvert.DeserializeObject<FormData>(input);
+            formData = JsonConvert.DeserializeObject<FormData>(textFromFile);
             tb_prefix.Text = formData.Prefix;
             tb_suffix.Text = formData.Suffix;
             tb_middle_part.Text = formData.MiddlePart;
-            StartNumber = formData.StartNum;
-            nm.Value = StartNumber;
+            nm.Value = formData.StartNum;
             buttonCExternalEvent = new ButtonCExternalEvent();
             externalCEvent = ExternalEvent.Create(buttonCExternalEvent);
         }
@@ -49,10 +47,10 @@ namespace INum
             AppForm appForm = AppForm.ActiveForm as AppForm;
             ButtonCExternalEvent.ActiveForm = appForm;
 
-            Main.prefix = tb_prefix.Text;
-            Main.eqp = tb_middle_part.Text;
-            Main.suffix = tb_suffix.Text;
-            Main.startnum = nm.Value;
+            FormData.StaticPrefix = tb_prefix.Text;
+            FormData.StaticMiddlePart = tb_middle_part.Text;
+            FormData.StaticSuffix = tb_suffix.Text;
+            FormData.StaticStartNum = nm.Value;
 
             FormData myData = new FormData();
             myData.Prefix = tb_prefix.Text;
@@ -60,7 +58,7 @@ namespace INum
             myData.Suffix = tb_suffix.Text;
             myData.StartNum = nm.Value;
             string output = JsonConvert.SerializeObject(myData);
-            Main.WriteToFile(Main.filename, output);
+            DataFile.WriteToFile(DataFile.FileName, output);
 
             externalCEvent.Raise();
         }
@@ -74,7 +72,7 @@ namespace INum
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = app.ActiveUIDocument.Document;
 
-            Reference selectedElement = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, new AnnotationFilter(), "Select...");
+            Reference selectedElement = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, new ElementsFilter(), "Select...");
             ElementId selectedElementId = selectedElement.ElementId;
             using (Transaction tr = new Transaction(doc, "MyTransaction"))
             {
@@ -86,7 +84,7 @@ namespace INum
                     if (p.Definition.Name.ToLower() == "мск_маркировка")
                     {
                         //int.TryParse(Main.startnum, out int start);
-                        p.Set(Main.prefix + Main.eqp + Main.suffix + Main.startnum.ToString("0"));
+                        p.Set(FormData.StaticPrefix + FormData.StaticMiddlePart + FormData.StaticSuffix + FormData.StaticStartNum.ToString("0"));
                     }
                 }
                 tr.Commit();
@@ -184,7 +182,7 @@ namespace INum
                 {
                     if (p.Definition.Name.ToLower() == "мск_маркировка")
                     {
-                        p.Set(Main.prefix + Main.eqp + Main.suffix + Main.startnum.ToString("0"));
+                        p.Set(FormData.StaticPrefix + FormData.StaticMiddlePart + FormData.StaticSuffix + FormData.StaticStartNum.ToString("0"));
                     }
                 }
                 tr.Commit();

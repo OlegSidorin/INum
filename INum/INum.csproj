@@ -57,7 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnnotationFilter.cs" />
+    <Compile Include="DataFile.cs" />
+    <Compile Include="ElementsFilter.cs" />
     <Compile Include="JtWindowHandle.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="FormData.cs" />
